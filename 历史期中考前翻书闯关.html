@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八上历史期中考前翻书闯关</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #3498db;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .level-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .level-btn {
+            padding: 18px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .level-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .level-btn.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .level-btn .status {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .question-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .input-row label {
+            width: 100px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .input-row input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-row input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+        
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .next-btn {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .next-btn:hover {
+            background: #27ae60;
+        }
+        
+        .next-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .answer-text {
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .completion {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+        
+        .completion h2 {
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+        
+        .completion p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        
+        .completion .level-info {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+        
+        .home-btn, .restart-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        .home-btn:hover, .restart-btn:hover {
+            background: #c0392b;
+        }
+        
+        .hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .paragraph-input-container {
+            display: block;
+        }
+        
+        .paragraph-input-container.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>八上历史期中考前翻书闯关</h1>
+            <p>测试你的历史知识掌握情况</p>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <!-- 首页 - 关卡选择 -->
+        <div class="content" id="level-selection">
+            <div class="page-title">请选择关卡</div>
+            <div class="level-selection">
+                <button class="level-btn" data-level="0">
+                    <span>第一关：1-3课</span>
+                    <span class="status" id="level-0-status">未完成</span>
+                </button>
+                <button class="level-btn" data-level="1">
+                    <span>第二关：4-5课</span>
+                    <span class="status" id="level-1-status">未完成</span>
+                </button>
+                <button class="level-btn" data-level="2">
+                    <span>第三关：6-7课</span>
+                    <span class="status" id="level-2-status">未完成</span>
+                </button>
+                <button class="level-btn" data-level="3">
+                    <span>第四关：8-10课</span>
+                    <span class="status" id="level-3-status">未完成</span>
+                </button>
+                <button class="level-btn" data-level="4">
+                    <span>第五关：11-12课</span>
+                    <span class="status" id="level-4-status">未完成</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 答题页面 -->
+        <div class="content" id="quiz-content" style="display: none;">
+            <div class="page-title" id="level-title">第一关：1-3课</div>
+            <div class="question-box">
+                <div class="question-text" id="question-text">问题加载中...</div>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-row">
+                    <label for="page-input">页码：</label>
+                    <input type="number" id="page-input" placeholder="请输入页码">
+                </div>
+                <div class="input-row paragraph-input-container" id="paragraph-container">
+                    <label for="paragraph-input">第几段：</label>
+                    <input type="number" id="paragraph-input" placeholder="请输入段落号">
+                </div>
+                <p class="hint" id="hint-text">提示：段号只算正文和知识拓展部分</p>
+            </div>
+            
+            <div class="button-group">
+                <button class="submit-btn" id="submit-btn">提交答案</button>
+                <button class="next-btn" id="next-btn" disabled>下一题</button>
+            </div>
+            
+            <div class="result" id="result">
+                <div id="result-text"></div>
+                <div class="answer-text" id="answer-text"></div>
+            </div>
+        </div>
+        
+        <!-- 通关页面 -->
+        <div class="completion" id="completion">
+            <h2>恭喜！</h2>
+            <div class="level-info" id="level-info">你已成功通过第一关！</div>
+            <p>点击下方按钮返回首页选择其他关卡</p>
+            <button class="home-btn" id="home-btn">返回首页</button>
+        </div>
+    </div>
+
+    <script>
+        // 题库数据 - 根据Excel表格整理
+        const levels = [
+            // 第一关：1-3课
+            [
+                {
+                    question: "1842-1844年间签订的不平等条约",
+                    page: 8,
+                    paragraph: 0,
+                    answer: "《南京条约》《虎门条约》《望厦条约》《黄埔条约》"
+                },
+                {
+                    question: "近代中国社会的主要矛盾和历史任务",
+                    page: 9,
+                    paragraph: 1,
+                    answer: "帝国主义与中华民族的矛盾、封建主义和人民大众的矛盾；反对帝国主义和封建主义，实现民族独立和人民解放"
+                },
+                {
+                    question: "1858年清政府同俄美英法四国签订的不平等条约",
+                    page: 11,
+                    paragraph: 1,
+                    answer: "《天津条约》"
+                },
+                {
+                    question: "半殖民地化程度进一步加深的事件及表现",
+                    page: 14,
+                    paragraph: 1,
+                    answer: "第二次鸦片战争：中国丧失更多主权，西方侵略势力深入长江中下游地区，俄国侵占中国北方大片领土"
+                },
+                {
+                    question: "《天朝田亩制度》的作用与局限性",
+                    page: 16,
+                    paragraph: 3,
+                    answer: "反映了千百年来农民要求得到土地的强烈愿望，发动和鼓舞农民参加反封建斗争；带有空想色彩，未能推行"
+                },
+                {
+                    question: "太平天国运动的影响",
+                    page: 19,
+                    paragraph: 2,
+                    answer: "从1851到1864年，坚持斗争14年，转战大半个中国，沉重打击了清朝的统治和外国侵略势力"
+                },
+                {
+                    question: "太平天国运动的失败原因",
+                    page: 19,
+                    paragraph: 2,
+                    answer: "农民阶级的局限性（革命纲领不切实际、腐败、不团结），中外反动势力（湘军、淮军、华尔洋枪队）联合镇压"
+                }
+            ],
+            // 第二关：4-5课
+            [
+                {
+                    question: "洋务运动的背景和目的主张",
+                    page: 22,
+                    paragraph: 1,
+                    answer: "内忧外患：两次鸦片战争、太平天国运动。主张学习西方技术，强兵富国，维护清王朝统治（地主阶级改良运动！！！）"
+                },
+                {
+                    question: "洋务运动在教育方面的举措",
+                    page: 23,
+                    paragraph: 1,
+                    answer: "兴办新式学校（京师同文馆），培养翻译和军事人才；设立翻译馆，翻译外国科技书籍；派遣留学生出国深造"
+                },
+                {
+                    question: "洋务运动的积极作用和局限性",
+                    page: 24,
+                    paragraph: 1,
+                    answer: "早期近代化初步探索，中国近代工业有了一定发展，客观上促进了民族资本主义产生；清朝政治腐败和外国势力的积压，没有实现求强求富的目标"
+                },
+                {
+                    question: "东南海疆首先面临外国威胁",
+                    page: 24,
+                    paragraph: 2,
+                    answer: "美国侵略台湾，后转而支持日本侵略台湾"
+                },
+                {
+                    question: "1884年新疆建省的意义",
+                    page: 26,
+                    paragraph: 1,
+                    answer: "加强中央对新疆的管辖，巩固了西北边防，维护边疆稳定和国家统一"
+                },
+                {
+                    question: "1885年台湾建省的背景和意义",
+                    page: 28,
+                    paragraph: 2,
+                    answer: "中法战争；加强了台湾的海防地位，强化了对台湾的治理，推动台湾社会经济的发展"
+                },
+                {
+                    question: "洋务运动失败（破产）的标志",
+                    page: 31,
+                    paragraph: 1,
+                    answer: "1895年初威海卫战役，北洋舰队全军覆没"
+                },
+                {
+                    question: "《马关条约》的消极影响（积极影响见补充笔记）",
+                    page: 31,
+                    paragraph: 3,
+                    answer: "民族危机空前严重，半殖民地化程度大大加深：领土主权严重破坏，巨额赔款大举外债，侵略势力深入腹地，商品转为资本输出"
+                },
+                {
+                    question: "甲午战后加剧民族危机的事件",
+                    page: 32,
+                    paragraph: 1,
+                    answer: "列强掀起抢夺路矿利权、强租租借地、划分'势力范围'的瓜分狂潮"
+                },
+                {
+                    question: "甲午战后民族资本主义初步发展的原因",
+                    page: 32,
+                    paragraph: 3,
+                    answer: "甲午战败后，掀起'实业救国'的思潮，《马关条约》后外国人在华开办工厂、开采矿山，清政府放松对民间设厂的限制"
+                }
+            ],
+            // 第三关：6-7课
+            [
+                {
+                    question: "维新变法运动的目的和序幕",
+                    page: 34,
+                    paragraph: 0,
+                    answer: "学习西方政治制度以救亡图存、维护统治。1895年康有为、梁启超发动'公车上书'"
+                },
+                {
+                    question: "戊戌变法的高潮",
+                    page: 36,
+                    paragraph: 1,
+                    answer: "1897年列强掀起瓜分狂潮，1898年光绪颁布'明定国是诏'，宣布实行变法，开始百日维新（四类措施见表格）"
+                },
+                {
+                    question: "戊戌变法的性质",
+                    page: 37,
+                    paragraph: 1,
+                    answer: "中国近代第一次思想解放运动，也是资产阶级改良运动"
+                },
+                {
+                    question: "戊戌变法的意义",
+                    page: 37,
+                    paragraph: 1,
+                    answer: "最后以失败告终，但促进了思想启蒙和民族意识的觉醒，创办京师大学堂（北京大学），推动近代教育和报刊事业发展"
+                },
+                {
+                    question: "义和团运动的性质",
+                    page: 38,
+                    paragraph: 1,
+                    answer: "具有广泛群众性的反帝斗争组织（不反封建、盲目排外）"
+                },
+                {
+                    question: "义和团运动失败的直接原因和意义",
+                    page: 40,
+                    paragraph: 4,
+                    answer: "直接原因：中外反动势力（八国联军和清军）的镇压；意义：沉重打击了帝国主义瓜分中国的野心"
+                },
+                {
+                    question: "清政府成为列强统治中国的工具的条约",
+                    page: 42,
+                    paragraph: 0,
+                    answer: "《辛丑条约》：清政府保证严禁人民参加各种形式的反帝活动，沦为'洋人的朝廷'"
+                },
+                {
+                    question: "《辛丑条约》中严重损害中国主权、干涉中国外交的两个条款",
+                    page: 42,
+                    paragraph: 1,
+                    answer: "划定北京东交民巷为使馆界（'国中之国'），允许各国派兵驻守，不准中国人居住；改总理衙门为外务部，班列六部之前"
+                },
+                {
+                    question: "清末新政与北洋军阀",
+                    page: 43,
+                    paragraph: 1,
+                    answer: "民族资本主义发展，民族资产阶级壮大；袁世凯培植北洋军阀集团"
+                }
+            ],
+            // 第四关：8-10课
+            [
+                {
+                    question: "第一个资产阶级革命【团体】兴中会",
+                    page: 46,
+                    paragraph: 2,
+                    answer: "1894年孙中山成立，号召驱除鞑虏……创立合众政府"
+                },
+                {
+                    question: "同盟会成立的政治、思想、组织背景",
+                    page: 47,
+                    paragraph: 2,
+                    answer: "《辛丑条约》签订，清政府沦为帝国主义统治中国的工具，国内革命情绪日趋高涨；章炳麟、邹容、陈天华宣传资产阶级革命思想；各种革命团体建立"
+                },
+                {
+                    question: "第一个资产阶级革命【政党】中国同盟会",
+                    page: 48,
+                    paragraph: 2,
+                    answer: "1905年东京成立，纲领：'驱除鞑虏，恢复中华，创立民国，平均地权'，统一了领导机构，明确了奋斗目标"
+                },
+                {
+                    question: "孙中山资产阶级革命指导思想：三民主义",
+                    page: 48,
+                    paragraph: 3,
+                    answer: "【详见49页右上角】民族主义（推翻满清王朝统治）、民权主义（建立资产阶级民主共和国）、民生主义（核定地价，土地国有）"
+                },
+                {
+                    question: "革命党人发动武装起义的影响",
+                    page: 49,
+                    paragraph: 0,
+                    answer: "同盟会声望大增；革命党人不屈不挠的精神和视死如归的英雄气概，极大地鼓舞了全国人民的斗志"
+                },
+                {
+                    question: "武昌起义胜利后南方各省纷纷宣布独立",
+                    page: 53,
+                    paragraph: 1,
+                    answer: "1911年是农历辛亥年，史称'辛亥革命'"
+                },
+                {
+                    question: "辛亥革命的两大成果（民国成立 临时约法）",
+                    page: 54,
+                    paragraph: 0,
+                    answer: "1912年1月1日，中华民国南京临时政府成立；1912年3月，《中华民国临时约法》规定主权在民、民主自由、三权分立"
+                },
+                {
+                    question: "《中华民国临时约法》的评价",
+                    page: 55,
+                    paragraph: 1,
+                    answer: "中国历史上第一部具有资产阶级共和国宪法性质的重要文件，肯定了资产阶级民主共和制度和民主自由原则。（!!!想要通过责任内阁制架空总统，防止袁世凯专制独裁）但难有实际约束效力"
+                },
+                {
+                    question: "袁世凯成功窃取革命果实，建立北洋政府",
+                    page: 56,
+                    paragraph: 1,
+                    answer: "1912年，袁世凯在北京就任中华民国临时大总统，临时政府迁往北京"
+                },
+                {
+                    question: "辛亥革命的历史意义和历史局限",
+                    page: 57,
+                    paragraph: 0,
+                    answer: "推翻了清王朝的统治，宣告了中国两千多年君主专制制度的终结，拉开了中国完全意义上的近代民族民主革命的序幕。——但是，辛亥革命并没有解决近代中国社会的主要矛盾，没有完成民族独立、人民解放的历史任务，中国半殖民地半封建的社会性质没有改变"
+                },
+                {
+                    question: "辛亥革命在思想上的作用",
+                    page: 57,
+                    paragraph: 1,
+                    answer: "极大推动了中华民族的思想解放，打开了中国进步潮流的闸门（民主共和观念深入人心）"
+                },
+                {
+                    question: "袁世凯的复辟准备",
+                    page: 58,
+                    paragraph: 0,
+                    answer: "对内独裁专制，对外接受'二十一条'"
+                },
+                {
+                    question: "护国战争的胜利",
+                    page: 60,
+                    paragraph: 1,
+                    answer: "1916年3月，袁世凯被迫宣布取消帝制，6月在绝望中死去。护国战争结束"
+                },
+                {
+                    question: "1916袁世凯死后军阀割据",
+                    page: 60,
+                    paragraph: 2,
+                    answer: "军阀为争夺地盘，不惜出卖国家利益，依附帝国主义。大小军阀连年混战，中国陷入军阀割据纷争的动乱之中"
+                },
+                {
+                    question: "中国民族工业的短暂春天",
+                    page: 61,
+                    paragraph: 2,
+                    answer: "中华民国成立后，南京临时政府奖励实业，掀起发展民族工业的热潮；1914年第一次世界大战爆发，欧洲帝国主义国家放松了对中国的经济侵略，中国民族工业发展迎来短暂的春天"
+                }
+            ],
+            // 第五关：11-12课
+            [
+                {
+                    question: "新文化运动的背景",
+                    page: 64,
+                    paragraph: 1,
+                    answer: "辛亥革命失败，民国初年政治混乱，北洋政府尊孔复古逆流"
+                },
+                {
+                    question: "新文化运动抨击旧道德的著作",
+                    page: 65,
+                    paragraph: 2,
+                    answer: "李大钊《孔子与宪法》，鲁迅《狂人日记》"
+                },
+                {
+                    question: "新文化运动提倡新文学的著作",
+                    page: 66,
+                    paragraph: 1,
+                    answer: "胡适《文学改良刍议》，陈独秀《文学革命论》，白话文和新文学普及开来，更多人也就接受了新思想"
+                },
+                {
+                    question: "新文化运动的评价",
+                    page: 66,
+                    paragraph: 2,
+                    answer: "新文化运动动摇了封建道德礼教的统治地位，掀起了一股思想解放的潮流，使中国人民接受了一次民主与科学的洗礼，对随后爆发的五四运动起到了思想宣传和铺垫的作用"
+                },
+                {
+                    question: "1919年五四运动最反映反帝反封建性质的口号",
+                    page: 66,
+                    paragraph: 4,
+                    answer: "外争主权（拒绝在巴黎和约上签字，反抗帝国主义侵略），内除国贼（惩办签订二十一条的卖国贼，反抗封建北洋军阀）"
+                },
+                {
+                    question: "五四运动的扩大",
+                    page: 68,
+                    paragraph: 2,
+                    answer: "1919.6.5，上海工人罢工，三罢风潮席卷全国，工人阶级成为五四运动主力，登上历史舞台"
+                },
+                {
+                    question: "五四运动的性质",
+                    page: 68,
+                    paragraph: 4,
+                    answer: "以先进青年知识分子为先、广大人民群众参加的彻底反帝反封建的伟大爱国革命运动；伟大社会革命运动；伟大思想启蒙运动"
+                },
+                {
+                    question: "五四运动的意义",
+                    page: 69,
+                    paragraph: 1,
+                    answer: "是中国旧民主主义革命（资产阶级领导）走向新民主主义革命（无产阶级领导）的转折点；推动了中国社会进步，促进了马克思主义在中国的传播及其与中国工人运动的结合，为中国共产党成立了思想上干部上的准备"
+                },
+                {
+                    question: "中国共产党成立的思想基础",
+                    page: 70,
+                    paragraph: 1,
+                    answer: "马克思主义的传播（五四运动+十月革命；李大钊《我的马克思主义观》"
+                },
+                {
+                    question: "中国共产党成立的阶级基础",
+                    page: 71,
+                    paragraph: 2,
+                    answer: "工人阶级队伍壮大，马克思主义开始与中国工人运动结合"
+                },
+                {
+                    question: "中国共产党成立的组织基础",
+                    page: 70,
+                    paragraph: 3,
+                    answer: "中国共产党早期组织成立（陈独秀，上海）"
+                },
+                {
+                    question: "中共一大的史事",
+                    page: 72,
+                    paragraph: 0,
+                    answer: "时间、地点、名称、奋斗目标、中心工作——领导和组织工人运动"
+                },
+                {
+                    question: "中国共产党成立的意义",
+                    page: 73,
+                    paragraph: 1,
+                    answer: "开天辟地、焕然一新，革命发展客观需要，历史选择必然结果，形成伟大建党精神"
+                },
+                {
+                    question: "中共二大最高、最低纲领和意义",
+                    page: 74,
+                    paragraph: 1,
+                    answer: "最高：实现共产主义，最低：打倒军阀、推翻帝国主义压迫，统一中国；第一次提出反帝反封建的民主革命纲领"
+                },
+                {
+                    question: "第一次工人运动高潮的教训",
+                    page: 74,
+                    paragraph: 4,
+                    answer: "京汉铁路大罢工的失败给共产党启示，必须团结一切可能的同盟者，才能战胜强大的敌人（帝国主义和封建军阀）"
+                }
+            ]
+        ];
+
+        // 关卡名称
+        const levelNames = [
+            "第一关：1-3课",
+            "第二关：4-5课",
+            "第三关：6-7课",
+            "第四关：8-10课",
+            "第五关：11-12课"
+        ];
+
+        // DOM元素
+        const levelSelection = document.getElementById('level-selection');
+        const quizContent = document.getElementById('quiz-content');
+        const completion = document.getElementById('completion');
+        const questionText = document.getElementById('question-text');
+        const pageInput = document.getElementById('page-input');
+        const paragraphInput = document.getElementById('paragraph-input');
+        const paragraphContainer = document.getElementById('paragraph-container');
+        const hintText = document.getElementById('hint-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const result = document.getElementById('result');
+        const resultText = document.getElementById('result-text');
+        const answerText = document.getElementById('answer-text');
+        const progress = document.getElementById('progress');
+        const homeBtn = document.getElementById('home-btn');
+        const levelTitle = document.getElementById('level-title');
+        const levelInfo = document.getElementById('level-info');
+
+        // 当前状态
+        let currentLevel = 0;
+        let currentQuestionIndex = 0;
+        let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+
+        // 初始化
+        function init() {
+            updateLevelStatus();
+            
+            // 事件监听
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const level = parseInt(btn.getAttribute('data-level'));
+                    startLevel(level);
+                });
+            });
+            
+            submitBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextQuestion);
+            homeBtn.addEventListener('click', goHome);
+            
+            // 输入框回车提交
+            pageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkAnswer();
+            });
+            
+            paragraphInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkAnswer();
+            });
+        }
+
+        // 更新关卡状态显示
+        function updateLevelStatus() {
+            for (let i = 0; i < 5; i++) {
+                const statusElement = document.getElementById(`level-${i}-status`);
+                const levelBtn = document.querySelector(`.level-btn[data-level="${i}"]`);
+                
+                if (completedLevels.includes(i)) {
+                    statusElement.textContent = "已完成";
+                    levelBtn.classList.add('completed');
+                } else {
+                    statusElement.textContent = "未完成";
+                    levelBtn.classList.remove('completed');
+                }
+            }
+        }
+
+        // 开始关卡
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestionIndex = 0;
+            
+            levelSelection.style.display = 'none';
+            quizContent.style.display = 'block';
+            completion.style.display = 'none';
+            
+            levelTitle.textContent = levelNames[level];
+            loadQuestion();
+            updateProgress();
+        }
+
+        // 加载题目
+        function loadQuestion() {
+            if (currentQuestionIndex < levels[currentLevel].length) {
+                const question = levels[currentLevel][currentQuestionIndex];
+                questionText.textContent = question.question;
+                pageInput.value = '';
+                paragraphInput.value = '';
+                result.style.display = 'none';
+                nextBtn.disabled = true;
+                submitBtn.disabled = false;
+                
+                // 根据段号是否为0决定是否显示段落输入框
+                if (question.paragraph === 0) {
+                    paragraphContainer.classList.add('hidden');
+                    hintText.textContent = "提示：本题答案在全页内容中，只需填写页码";
+                } else {
+                    paragraphContainer.classList.remove('hidden');
+                    hintText.textContent = "提示：段号只算正文和知识拓展部分";
+                }
+                
+                pageInput.focus();
+            } else {
+                completeLevel();
+            }
+        }
+
+        // 检查答案
+        function checkAnswer() {
+            const question = levels[currentLevel][currentQuestionIndex];
+            const pageAnswer = parseInt(pageInput.value);
+            
+            if (isNaN(pageAnswer)) {
+                alert('请输入有效的页码！');
+                return;
+            }
+            
+            // 如果段号为0，只检查页码
+            if (question.paragraph === 0) {
+                if (pageAnswer === question.page) {
+                    // 回答正确
+                    result.className = 'result correct';
+                    resultText.textContent = '回答正确！';
+                    answerText.textContent = question.answer;
+                    result.style.display = 'block';
+                    submitBtn.disabled = true;
+                    nextBtn.disabled = false;
+                    updateProgress();
+                } else {
+                    // 回答错误
+                    result.className = 'result incorrect';
+                    resultText.textContent = '回答错误，请重试！';
+                    answerText.textContent = '';
+                    result.style.display = 'block';
+                    pageInput.value = '';
+                    pageInput.focus();
+                }
+            } else {
+                // 检查页码和段号
+                const paragraphAnswer = parseInt(paragraphInput.value);
+                
+                if (isNaN(paragraphAnswer)) {
+                    alert('请输入有效的段落号！');
+                    return;
+                }
+                
+                if (pageAnswer === question.page && paragraphAnswer === question.paragraph) {
+                    // 回答正确
+                    result.className = 'result correct';
+                    resultText.textContent = '回答正确！';
+                    answerText.textContent = question.answer;
+                    result.style.display = 'block';
+                    submitBtn.disabled = true;
+                    nextBtn.disabled = false;
+                    updateProgress();
+                } else {
+                    // 回答错误
+                    result.className = 'result incorrect';
+                    resultText.textContent = '回答错误，请重试！';
+                    answerText.textContent = '';
+                    result.style.display = 'block';
+                    pageInput.value = '';
+                    paragraphInput.value = '';
+                    pageInput.focus();
+                }
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // 更新进度条
+        function updateProgress() {
+            const progressPercent = (currentQuestionIndex / levels[currentLevel].length) * 100;
+            progress.style.width = `${progressPercent}%`;
+        }
+
+        // 完成关卡
+        function completeLevel() {
+            if (!completedLevels.includes(currentLevel)) {
+                completedLevels.push(currentLevel);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            
+            quizContent.style.display = 'none';
+            completion.style.display = 'block';
+            levelInfo.textContent = `你已成功通过${levelNames[currentLevel]}！`;
+        }
+
+        // 返回首页
+        function goHome() {
+            completion.style.display = 'none';
+            levelSelection.style.display = 'block';
+            updateLevelStatus();
+        }
+
+        // 初始化应用
+        window.onload = init;
+    </script>
+</body>
+</html>
